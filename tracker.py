@@ -6,6 +6,7 @@ import ephem
 import datetime
 import requests
 import matplotlib.pyplot as plt
+import tkinter
 
 from ephem import degree
 from datetime import datetime as date_t
@@ -27,17 +28,59 @@ def loadTLE(filename):
     print (len(satlist), "satellites loaded into list")
     return satlist
 
+
 def main():
+	print("start")
+	window = tkinter.Tk()
+	window.title("GUI")
+	Titulo = tkinter.Label(window, text = "TSM Patagonia: Posicionado de constelacion satelital").pack()
+	tkinter.Label(window, text="Latitud").pack()
+	
+
+	var_1 = tkinter.Entry(window)
+	var_1.pack()
+	tkinter.Label(window, text="Longitud").pack()
+	var_2 = tkinter.Entry(window)
+	var_2.pack()
+	tkinter.Label(window, text="Fecha y hora [dd-mm-yyyy hh:mm] [0 para ahora]").pack()
+	var_3 = tkinter.Entry(window)
+	var_3.pack()
+
+
+	def welcomeMessage():
+		global var1, var2, var3
+		var1 = var_1.get()
+		var2 = var_2.get()
+		var3 = var_3.get()
+		print(var1)
+		print(var2)
+		print(var3)
+		if (var3 == "0"):
+			var3 = date_t.now()
+		else:
+			var3 = date_t.strptime(var3, "%d-%m-%Y %H:%M")
+
+		return var1, var2, var3
+
+
+	tkinter.Button(window, text="Click Here", command=welcomeMessage).pack()	
+
+	window.mainloop()
+
+	print("Sector mapa")
 	# Define observer coordinates (Wachusett Mtn.)
 	#loc_lat = -42.503
 	#loc_long = -71.886
 	#print "Latitud"
-	loc_lat = float(input("Latitud: "))
-	#print "Longitud"
-	loc_long = float(input("Longitud: "))
 
-	fecha_str = input("Fecha y hora [dd-mm-yyyy hh:mm]: ")
-	fecha = date_t.strptime(fecha_str, "%d-%m-%Y %H:%M")
+	loc_lat = float(var1)
+	#print "Longitud"
+	loc_long = float(var2)
+	#fecha_str = input("Fecha y hora [dd-mm-yyyy hh:mm]: ")
+	fecha = var3
+
+
+
 
 	observer = ephem.Observer()
 	observer.lat = np.deg2rad(loc_lat)
@@ -121,12 +164,22 @@ def main():
 			linewidth = 4,
 			transform = ccrs.Geodetic()
 		)
+		plt.scatter(sat_long[i][0],	sat_lat[i][0],
+			linewidth = 60,
+			transform = ccrs.Geodetic(),
+			alpha = .5
+		)
 
 		ax.annotate(globalstar[i].name[11:15], (sat_long[i][0] -3 ,sat_lat[i][0] - 3))
 
 		plt.plot(sat_long[i], sat_lat[i],
 			linewidth = 2,
 			transform = ccrs.Geodetic()
+		)
+		plt.plot(sat_long[i], sat_lat[i],
+			linewidth = 60,
+			transform = ccrs.Geodetic(),
+			alpha = .5
 		)
 		plt.plot(sat_long[i][-1], sat_lat[i][-1],
 			linewidth = 2,
@@ -157,6 +210,6 @@ def main():
 #	ax.grid(True)
 
 	plt.show()
-	
+
 if __name__ == '__main__':
 	main()
