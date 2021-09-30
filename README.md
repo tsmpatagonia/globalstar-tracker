@@ -6,7 +6,7 @@ A Python program designed to parse TLE's to track and plot the position of Globa
   + Se puede elegir fecha
   + Hace una descarga de las orbitas, manteniendo la info actualizada, cada vez que se ejecuta
   + Muestra en mapa las coordenadas seleccionadas
+  + Area de cobertura
 
 # TODO
-  + Area de cobertura
-  + Tiempo real
+  + Orbita en movimiento en Tiempo real
